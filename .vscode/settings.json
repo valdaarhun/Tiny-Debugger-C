@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "tracee.h": "c",
+        "userinput.h": "c",
+        "string.h": "c"
+    }
+}

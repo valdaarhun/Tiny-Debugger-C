@@ -7,23 +7,17 @@
 #include <unistd.h>
 
 #include "wrappers.h"
+#include "tracee.h"
+#include "userInput.h"
 
-void user_input(pid_t pid){
-    char buffer[256];
-    while(1){
-        fgets(buffer, 255, stdin);
-        if (!strcmp("quit", buffer)){
-            wait(NULL);
-            exit(0);
-        }
-    }
-}
+TraceeInfo tracee;
 
-void debug(pid_t pid){
+void debug(){
+    printf("Starting debugging process...\n");
     int wstatus;
-    waitpid(pid, &wstatus, 0);
-    printf("status: %d\n", wstatus);
-    user_input(pid);
+    waitpid(tracee.pid, &wstatus, 0);
+    printf("status: %d\n", WIFSTOPPED(wstatus));
+    userInput();
 }
 
 int main(int argc, char *argv[]){
@@ -36,10 +30,15 @@ int main(int argc, char *argv[]){
 
     if (pid == 0){
         char *argv_child[] = {argv[1], NULL};
+        /* pid, addr, data are ignored when using PTRACE_TRACEME */
+        Ptrace(PTRACE_TRACEME, /* pid */ 0, /* addr */ NULL, /* data */ NULL);
         execv(argv[1], argv_child);
 
         /* If exec fails... */
-        print_error("Failed to launch tracee program\n");
+        print_error("Failed to launch tracee program");
     }
-    debug(pid);
+
+    /* Parent process */
+    tracee.pid = pid;
+    debug();
 }
