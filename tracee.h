@@ -9,6 +9,7 @@ typedef struct{
     pid_t pid;
 }TraceeInfo;
 
+void killTracee();
 void continueTracee();
 
 #endif

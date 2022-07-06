@@ -36,6 +36,7 @@ void userInput(){
             continueTracee();
         }
         else if (checkPrefix(buf, "exit") || checkPrefix(buf, "quit")){
+            killTracee();
             return;
         }
     }
