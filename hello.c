@@ -1,7 +1,8 @@
-#include <unistd.h>
-
-#define TIME 100000000
+#include <stdio.h>
 
 int main(){
-    usleep(TIME);
+    printf("Hello\n");
+    int num = -1;
+    scanf("%d", &num);
+    printf("%d\n", num);
 }
