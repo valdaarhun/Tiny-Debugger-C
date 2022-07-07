@@ -18,8 +18,10 @@ void killTracee(){
 
 void breakpointTracee(intptr_t addr){
     u_int32_t word = Ptrace(PTRACE_PEEKTEXT, tracee.pid, (void *)addr, NULL);
-    word &= 0xff;
-    printf("Word: %x\n", word);
+    u_int8_t byte = word & 0xff;
+    printf("Word: %x\n", byte);
+    u_int32_t new_word = (word & ~0xff) | 0xcc;
+    Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)new_word);
 }
 
 void continueTracee(){
