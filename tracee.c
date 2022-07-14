@@ -1,11 +1,11 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <signal.h>
 #include <sys/ptrace.h>
 #include <sys/reg.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <unistd.h>
 
 #include "tracee.h"
 #include "wrappers.h"
@@ -17,11 +17,11 @@ void killTracee(){
 }
 
 void breakpointTracee(intptr_t addr){
-    u_int32_t word = Ptrace(PTRACE_PEEKTEXT, tracee.pid, (void *)addr, NULL);
-    u_int8_t byte = word & 0xff;
+    uint32_t word = Ptrace(PTRACE_PEEKTEXT, tracee.pid, (void *)addr, NULL);
+    uint8_t byte = word & 0xff;
     printf("Word: %x\n", byte);
-    u_int32_t new_word = (word & ~0xff) | 0xcc;
-    Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)new_word);
+    uint32_t new_word = (word & ~0xff) | 0xcc;
+    Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)(uint64_t)new_word);
 }
 
 void continueTracee(){
