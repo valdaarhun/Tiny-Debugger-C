@@ -7,9 +7,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "wrappers.h"
 #include "tracee.h"
 #include "userInput.h"
+#include "wrappers.h"
 
 TraceeInfo tracee;
 
