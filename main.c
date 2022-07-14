@@ -7,13 +7,18 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "hashTable.h"
 #include "tracee.h"
 #include "userInput.h"
 #include "wrappers.h"
 
 TraceeInfo tracee;
+HashTable hash_table[HASH_TABLE_SIZE];
 
 void debug(){
+    printf("Creating and initializing data structures");
+    initHashTable();
+
     printf("Starting debugging process...\n");
     int wstatus;
     waitpid(tracee.pid, &wstatus, 0);
