@@ -18,13 +18,12 @@ void killTracee(){
 }
 
 void breakpointTracee(intptr_t addr){
-    uint32_t word = Ptrace(PTRACE_PEEKTEXT, tracee.pid, (void *)addr, NULL);
-    uint8_t byte = word & 0xff;
-    printf("Word: %x\n", byte);
-    uint32_t new_word = (word & ~0xff) | 0xcc;
-    Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)(uint64_t)new_word);
-    Breakpoint *h = createHashTableElement(addr);
-    insertHashTableElement(h);
+    int32_t word = Ptrace(PTRACE_PEEKTEXT, tracee.pid, (void *)addr, NULL);
+    int8_t byte = word & 0xff;
+    printf("Word: %hhx\n", byte);
+    int32_t new_word = (word & ~0xff) | 0xcc;
+    Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)(int64_t)new_word);
+    insertBreakpoint(addr, byte);
 }
 
 void continueTracee(){

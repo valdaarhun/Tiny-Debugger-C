@@ -8,6 +8,15 @@
 
 extern HashTable breakpoints[HASH_TABLE_SIZE];
 
+static Breakpoint *createBreakpoint(intptr_t address, int8_t byte){
+    Breakpoint *h = (Breakpoint *)malloc(sizeof(Breakpoint));
+    h -> address = address;
+    h -> byte = byte;
+    h -> previous = NULL;
+    h -> next = NULL;
+    return h;
+}
+
 void initHashTable(){
     for (int i = 0 ; i < HASH_TABLE_SIZE ; i++){
         breakpoints[i].is_empty = true;
@@ -15,16 +24,9 @@ void initHashTable(){
     }
 }
 
-Breakpoint *createHashTableElement(intptr_t address){
-    Breakpoint *h = (Breakpoint *)malloc(sizeof(Breakpoint));
-    h -> address = address;
-    h -> previous = NULL;
-    h -> next = NULL;
-    return h;
-}
-
-void insertHashTableElement(Breakpoint *h){
-    uint16_t idx = h -> address;
+void insertBreakpoint(intptr_t addr, int8_t byte){
+    Breakpoint *h = createBreakpoint(addr, byte);
+    uint16_t idx = (uint64_t)(h -> address) % HASH_TABLE_SIZE;
     if (breakpoints[idx].is_empty){
         breakpoints[idx].is_empty = false;
         breakpoints[idx].head = h;
@@ -40,11 +42,12 @@ void insertHashTableElement(Breakpoint *h){
             return;
         }
         ptr -> next = h;
+        h -> previous = ptr;
     }
 }
 
-void deleteHashTableElement(intptr_t address){
-    uint16_t idx = address;
+void deleteBreakpoint(intptr_t address){
+    uint16_t idx = (uint64_t)address % HASH_TABLE_SIZE;
     Breakpoint *ptr = breakpoints[idx].head;
     while (ptr != NULL && ptr -> address != address){
         ptr = ptr -> next;
@@ -56,6 +59,7 @@ void deleteHashTableElement(intptr_t address){
     if (ptr -> next == NULL){
         if (ptr -> previous == NULL){
             breakpoints[idx].head = NULL;
+            breakpoints[idx].is_empty = true;
         }
         else{
             (ptr -> previous) -> next = NULL;
@@ -72,5 +76,18 @@ void deleteHashTableElement(intptr_t address){
             (ptr -> next) -> previous = ptr -> previous;
         }
         free(ptr);
+    }
+}
+
+void cleanupHashTable(){
+    for (int i = 0 ; i < HASH_TABLE_SIZE ; i++){
+        if (!breakpoints[i].is_empty){
+            Breakpoint *h = breakpoints[i].head;
+            while(h != NULL){
+                Breakpoint *temp = h -> next;
+                free(h);
+                h = temp;
+            }
+        }
     }
 }

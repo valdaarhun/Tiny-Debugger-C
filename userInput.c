@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "hashTable.h"
 #include "tracee.h"
 
 #define MAX_LENGTH 128
@@ -56,6 +57,7 @@ void userInput(){
         }
         else if (checkPrefix(buf, "exit") || checkPrefix(buf, "quit")){
             killTracee();
+            cleanupHashTable();
             return;
         }
         else if (checkPrefix(buf, "break")){

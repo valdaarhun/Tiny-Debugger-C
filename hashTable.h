@@ -7,6 +7,7 @@
 
 struct Breakpoint{
     intptr_t address;
+    int8_t byte;
     struct Breakpoint *next;
     struct Breakpoint *previous;
 };
@@ -19,7 +20,7 @@ typedef struct{
 }HashTable;
 
 void initHashTable();
-Breakpoint *createHashTableElement(intptr_t);
-void insertHashTableElement(Breakpoint *);
+void insertBreakpoint(intptr_t, int8_t);
+void cleanupHashTable();
 
 #endif
