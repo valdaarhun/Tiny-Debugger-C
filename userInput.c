@@ -70,7 +70,7 @@ void userInput(){
             else{
                 address = strtoul(AddressStr, NULL, 16);
             }
-            breakpointTracee(address);
+            addBreakpointTracee(address);
         }
     }
 }

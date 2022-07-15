@@ -17,7 +17,7 @@ void killTracee(){
     kill(tracee.pid, SIGKILL);
 }
 
-void breakpointTracee(intptr_t addr){
+void addBreakpointTracee(intptr_t addr){
     int32_t word = Ptrace(PTRACE_PEEKTEXT, tracee.pid, (void *)addr, NULL);
     int8_t byte = word & 0xff;
     printf("Word: %hhx\n", byte);

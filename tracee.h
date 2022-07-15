@@ -10,7 +10,7 @@ typedef struct{
 }TraceeInfo;
 
 void killTracee();
-void breakpointTracee(intptr_t);
+void addBreakpointTracee(intptr_t);
 void continueTracee();
 
 #endif

@@ -80,6 +80,7 @@ void deleteBreakpoint(intptr_t address){
 }
 
 void cleanupHashTable(){
+    printf("\nCleaning up data structures\n");
     for (int i = 0 ; i < HASH_TABLE_SIZE ; i++){
         if (!breakpoints[i].is_empty){
             Breakpoint *h = breakpoints[i].head;

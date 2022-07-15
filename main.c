@@ -16,13 +16,13 @@ TraceeInfo tracee;
 HashTable breakpoints[HASH_TABLE_SIZE];
 
 void debug(){
-    printf("Creating and initializing data structures\n");
+    printf("Initializing data structures\n");
     initHashTable();
 
-    printf("Starting debugging process...\n");
+    printf("Starting debugging process...\n\n");
     int wstatus;
     waitpid(tracee.pid, &wstatus, 0);
-    printf("status: %d\n", WIFSTOPPED(wstatus));
+    // fprintf(stderr, "status: %d\n", WIFSTOPPED(wstatus));
     userInput();
 }
 
