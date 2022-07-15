@@ -21,6 +21,7 @@ typedef struct{
 
 void initHashTable();
 void insertBreakpoint(intptr_t, int8_t);
+void deleteBreakpoint(intptr_t, int8_t *);
 void cleanupHashTable();
 
 #endif

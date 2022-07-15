@@ -36,7 +36,7 @@ static bool checkPrefix(char *inp, char *str){
     Currently the function assumes that input is of the form "break address"
     TODO: Enhancement: API that converts a string to a vector of strings similar to list.split in python
 */
-static short parseAddress(char * buf, char **AddressStr){
+static short parseAddress(char *buf, char **AddressStr){
     char *address = strstr(buf, " ") + 1;
     size_t len = strlen(address);
     if (address[len - 1] == '\n'){
@@ -47,6 +47,22 @@ static short parseAddress(char * buf, char **AddressStr){
         return 1;
     }
     return 0;
+}
+
+/*
+    Move this function later to a separate file for data type manipulation
+*/
+static intptr_t convertStrToAddr(char *buf){
+    char *AddressStr;
+    short stat = parseAddress(buf, &AddressStr);
+    intptr_t address;
+    if (stat){
+        address = strtoul(AddressStr + 2, NULL, 16);
+    }
+    else{
+        address = strtoul(AddressStr, NULL, 16);
+    }
+    return address;
 }
 
 void userInput(){
@@ -61,16 +77,12 @@ void userInput(){
             return;
         }
         else if (checkPrefix(buf, "break")){
-            char *AddressStr;
-            short stat = parseAddress(buf, &AddressStr);
-            intptr_t address;
-            if (stat){
-                address = strtoul(AddressStr + 2, NULL, 16);
-            }
-            else{
-                address = strtoul(AddressStr, NULL, 16);
-            }
+            intptr_t address = convertStrToAddr(buf);
             addBreakpointTracee(address);
+        }
+        else if (checkPrefix(buf, "delete")){
+            intptr_t address = convertStrToAddr(buf);
+            deleteBreakpointTracee(address);
         }
     }
 }

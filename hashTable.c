@@ -6,6 +6,9 @@
 
 #include "hashTable.h"
 
+/* x % y */
+#define MOD(x, y) ((y + (x % y)) % y)
+
 extern HashTable breakpoints[HASH_TABLE_SIZE];
 
 static Breakpoint *createBreakpoint(intptr_t address, int8_t byte){
@@ -26,7 +29,7 @@ void initHashTable(){
 
 void insertBreakpoint(intptr_t addr, int8_t byte){
     Breakpoint *h = createBreakpoint(addr, byte);
-    uint16_t idx = (uint64_t)(h -> address) % HASH_TABLE_SIZE;
+    uint16_t idx = MOD(h -> address, HASH_TABLE_SIZE);
     if (breakpoints[idx].is_empty){
         breakpoints[idx].is_empty = false;
         breakpoints[idx].head = h;
@@ -46,8 +49,8 @@ void insertBreakpoint(intptr_t addr, int8_t byte){
     }
 }
 
-void deleteBreakpoint(intptr_t address){
-    uint16_t idx = (uint64_t)address % HASH_TABLE_SIZE;
+void deleteBreakpoint(intptr_t address, int8_t *byte){
+    uint16_t idx = MOD(address, HASH_TABLE_SIZE);
     Breakpoint *ptr = breakpoints[idx].head;
     while (ptr != NULL && ptr -> address != address){
         ptr = ptr -> next;
@@ -56,6 +59,7 @@ void deleteBreakpoint(intptr_t address){
         printf("Breakpoint has not been set at addr %lx\n", address);
         return;
     }
+    *byte = ptr -> byte;
     if (ptr -> next == NULL){
         if (ptr -> previous == NULL){
             breakpoints[idx].head = NULL;

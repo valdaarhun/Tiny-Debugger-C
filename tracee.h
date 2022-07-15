@@ -11,6 +11,7 @@ typedef struct{
 
 void killTracee();
 void addBreakpointTracee(intptr_t);
+void deleteBreakpointTracee(intptr_t);
 void continueTracee();
 
 #endif
