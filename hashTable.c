@@ -6,36 +6,36 @@
 
 #include "hashTable.h"
 
-extern HashTable hash_table[HASH_TABLE_SIZE];
+extern HashTable breakpoints[HASH_TABLE_SIZE];
 
 void initHashTable(){
     for (int i = 0 ; i < HASH_TABLE_SIZE ; i++){
-        hash_table[i].is_empty = true;
-        hash_table[i].head = NULL;
+        breakpoints[i].is_empty = true;
+        breakpoints[i].head = NULL;
     }
 }
 
-HashTableElement *createHashTableElement(intptr_t address){
-    HashTableElement *h = (HashTableElement *)malloc(sizeof(HashTableElement));
+Breakpoint *createHashTableElement(intptr_t address){
+    Breakpoint *h = (Breakpoint *)malloc(sizeof(Breakpoint));
     h -> address = address;
     h -> previous = NULL;
     h -> next = NULL;
     return h;
 }
 
-void insertHashTableElement(HashTableElement *h){
+void insertHashTableElement(Breakpoint *h){
     uint16_t idx = h -> address;
-    if (hash_table[idx].is_empty){
-        hash_table[idx].is_empty = false;
-        hash_table[idx].head = h;
+    if (breakpoints[idx].is_empty){
+        breakpoints[idx].is_empty = false;
+        breakpoints[idx].head = h;
     }
     else{
-        HashTableElement *ptr = hash_table[idx].head;
+        Breakpoint *ptr = breakpoints[idx].head;
         while (ptr -> next != NULL && ptr -> address != h -> address){
             ptr = ptr -> next;
         }
         if (ptr -> address == h -> address){
-            printf("Breakpoint has already been set at address %lx", h -> address);
+            printf("Breakpoint has already been set at address %lx\n", h -> address);
             free(h);
             return;
         }
@@ -45,17 +45,17 @@ void insertHashTableElement(HashTableElement *h){
 
 void deleteHashTableElement(intptr_t address){
     uint16_t idx = address;
-    HashTableElement *ptr = hash_table[idx].head;
+    Breakpoint *ptr = breakpoints[idx].head;
     while (ptr != NULL && ptr -> address != address){
         ptr = ptr -> next;
     }
     if (ptr == NULL){
-        printf("Breakpoint has not been set at addr %lx", address);
+        printf("Breakpoint has not been set at addr %lx\n", address);
         return;
     }
     if (ptr -> next == NULL){
         if (ptr -> previous == NULL){
-            hash_table[idx].head = NULL;
+            breakpoints[idx].head = NULL;
         }
         else{
             (ptr -> previous) -> next = NULL;
@@ -64,7 +64,7 @@ void deleteHashTableElement(intptr_t address){
     }
     else{
         if (ptr -> previous == NULL){
-            hash_table[idx].head = ptr -> next;
+            breakpoints[idx].head = ptr -> next;
             (ptr -> next) -> previous = NULL;
         }
         else{

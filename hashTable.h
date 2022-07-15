@@ -5,19 +5,21 @@
 
 #define HASH_TABLE_SIZE 0x10000
 
-struct HashTableElement{
+struct Breakpoint{
     intptr_t address;
-    struct HashTableElement *next;
-    struct HashTableElement *previous;
+    struct Breakpoint *next;
+    struct Breakpoint *previous;
 };
 
-typedef struct HashTableElement HashTableElement;
+typedef struct Breakpoint Breakpoint;
 
 typedef struct{
     bool is_empty;
-    HashTableElement *head;
+    Breakpoint *head;
 }HashTable;
 
 void initHashTable();
+Breakpoint *createHashTableElement(intptr_t);
+void insertHashTableElement(Breakpoint *);
 
 #endif

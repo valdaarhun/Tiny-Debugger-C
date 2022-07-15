@@ -13,7 +13,7 @@
 #include "wrappers.h"
 
 TraceeInfo tracee;
-HashTable hash_table[HASH_TABLE_SIZE];
+HashTable breakpoints[HASH_TABLE_SIZE];
 
 void debug(){
     printf("Creating and initializing data structures\n");

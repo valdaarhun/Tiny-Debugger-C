@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include "hashTable.h"
 #include "tracee.h"
 #include "wrappers.h"
 
@@ -22,6 +23,8 @@ void breakpointTracee(intptr_t addr){
     printf("Word: %x\n", byte);
     uint32_t new_word = (word & ~0xff) | 0xcc;
     Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)(uint64_t)new_word);
+    Breakpoint *h = createHashTableElement(addr);
+    insertHashTableElement(h);
 }
 
 void continueTracee(){
