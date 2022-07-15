@@ -37,8 +37,9 @@ int main(int argc, char *argv[]){
     if (pid == 0){
         char *argv_child[] = {argv[1], NULL};
         Personality(ADDR_NO_RANDOMIZE);
+
         /* pid, addr, data are ignored when using PTRACE_TRACEME */
-        Ptrace(PTRACE_TRACEME, /* pid */ 0, /* addr */ NULL, /* data */ NULL);
+        Ptrace(PTRACE_TRACEME, 0, NULL, NULL);
         execv(argv[1], argv_child);
 
         /* If exec fails... */

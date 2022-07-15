@@ -25,7 +25,7 @@ void breakpointTracee(intptr_t addr){
 }
 
 void continueTracee(){
-    Ptrace(PTRACE_CONT, tracee.pid, /* ignored */ NULL, NULL);
+    Ptrace(PTRACE_CONT, tracee.pid, NULL, NULL);
     int wstatus;
     waitpid(tracee.pid, &wstatus, 0);
 }
