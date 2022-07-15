@@ -36,8 +36,10 @@ pid_t Fork(){
 }
 
 long Ptrace(enum __ptrace_request request, pid_t pid, void *addr, void *data){
+    /* Reset errno since for some ptrace functions (eg: PTRACE_PEEKTEXT), ptrace might return a negative value in a successful operation */
+    errno = 0;
     long status = ptrace(request, pid, addr, data);
-    if (status < 0){
+    if (status < 0 && errno != 0){
         print_error("Error setting trace");
         kill(tracee.pid, SIGKILL);
         exit(1);

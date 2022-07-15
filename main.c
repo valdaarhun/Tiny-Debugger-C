@@ -16,7 +16,7 @@ TraceeInfo tracee;
 HashTable hash_table[HASH_TABLE_SIZE];
 
 void debug(){
-    printf("Creating and initializing data structures");
+    printf("Creating and initializing data structures\n");
     initHashTable();
 
     printf("Starting debugging process...\n");

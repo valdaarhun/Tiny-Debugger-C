@@ -20,11 +20,10 @@ static char *getPrompt(char *buf){
 }
 
 static bool checkPrefix(char *inp, char *str){
-    size_t InpLen = strlen(inp), StrLen = strlen(str);
-    if (InpLen == 0 || InpLen > StrLen){
+    if (*inp == '\0'){
         return false;
     }
-    for(int i = 0 ; i < InpLen && inp[i] != '\0' ; i++){
+    for(int i = 0 ; inp[i] != '\0' && inp[i] != ' ' ; i++){
         if (inp[i] != str[i]){
             return false;
         }
@@ -32,12 +31,17 @@ static bool checkPrefix(char *inp, char *str){
     return true;
 }
 
-static short parseAddress(char *address){
-    fgets(address, ADDRESS_LENGTH, stdin);
+/*
+    Currently the function assumes that input is of the form "break address"
+    TODO: Enhancement: API that converts a string to a vector of strings similar to list.split in python
+*/
+static short parseAddress(char * buf, char **AddressStr){
+    char *address = strstr(buf, " ") + 1;
     size_t len = strlen(address);
     if (address[len - 1] == '\n'){
         address[len - 1] = '\0';
     }
+    *AddressStr = address;
     if (address[1] == 'x' || address[1] == 'X'){
         return 1;
     }
@@ -55,9 +59,8 @@ void userInput(){
             return;
         }
         else if (checkPrefix(buf, "break")){
-            printf("Address to break at: ");
-            char AddressStr[ADDRESS_LENGTH];
-            short stat = parseAddress(AddressStr);
+            char *AddressStr;
+            short stat = parseAddress(buf, &AddressStr);
             intptr_t address;
             if (stat){
                 address = strtoul(AddressStr + 2, NULL, 16);
