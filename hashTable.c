@@ -83,6 +83,24 @@ void deleteBreakpoint(intptr_t address, int8_t *byte){
     }
 }
 
+/*
+    Create a vector data type that stores pointers to hashTableElements for quick deletion.
+    This will also allow us to have a single function for HashTable traversal and quick deletion
+*/
+
+void listBreakpoints(){
+    for (int i = 0 ; i < HASH_TABLE_SIZE ; i++){
+        if (!breakpoints[i].is_empty){
+            Breakpoint *h = breakpoints[i].head;
+            while(h != NULL){
+                Breakpoint *temp = h -> next;
+                printf("%lx\n", h -> address);
+                h = temp;
+            }
+        }
+    }
+}
+
 void cleanupHashTable(){
     printf("\nCleaning up data structures\n");
     for (int i = 0 ; i < HASH_TABLE_SIZE ; i++){

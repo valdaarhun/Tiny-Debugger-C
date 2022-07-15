@@ -84,5 +84,8 @@ void userInput(){
             intptr_t address = convertStrToAddr(buf);
             deleteBreakpointTracee(address);
         }
+        else if (checkPrefix(buf, "listb")){
+            listBreakpointTracee();
+        }
     }
 }

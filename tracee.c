@@ -34,6 +34,10 @@ void deleteBreakpointTracee(intptr_t addr){
     Ptrace(PTRACE_POKETEXT, tracee.pid, (void *)addr, (void *)(uint64_t)word);
 }
 
+void listBreakpointTracee(){
+    listBreakpoints();
+}
+
 void continueTracee(){
     Ptrace(PTRACE_CONT, tracee.pid, NULL, NULL);
     int wstatus;
