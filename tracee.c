@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 
 #include "hashTable.h"
+#include "registers.h"
 #include "tracee.h"
 #include "wrappers.h"
 
@@ -49,6 +50,8 @@ void continueTracee(){
 void getRegValue(char *reg){
     struct user_regs_struct data;
     Ptrace(PTRACE_GETREGS, tracee.pid, NULL, &data);
+    writeToCache(&data);
+    printf("%s: %llx\n", reg, readFromCache(reg));
 }
 
 void getMemValue(intptr_t addr){
