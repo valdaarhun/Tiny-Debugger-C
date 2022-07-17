@@ -20,11 +20,30 @@ static char *getPrompt(char *buf){
     return stat;
 }
 
+// static char *checkArgs(char *str){
+//     if (
+//         eol == 1 &&
+//         (
+//             !strcmp(str, "continue") ||
+//             !strcmp(str, "exit") ||
+//             !strcmp(str, "listb")
+//         )
+//     ){
+//         printf("\033[1;31m'%s' does not take any arguments\nIgnoring arguments...\033[0m\n", str);
+//         return NULL;
+//     }
+//     else if (eol == 0 && !strcmp(str, "read")){
+//         printf("\033[1;31m'%s' missing arguments\nIgnoring command...\033[0m\n", str);
+//         return NULL;
+//     }
+// }
+
 static bool checkPrefix(char *inp, char *str){
     if (*inp == '\0'){
         return false;
     }
-    for(int i = 0 ; inp[i] != '\0' && inp[i] != ' ' ; i++){
+    int i = 0;
+    for(i = 0 ; inp[i] != '\0' && inp[i] != ' ' ; i++){
         if (inp[i] != str[i]){
             return false;
         }
@@ -37,7 +56,7 @@ static bool checkPrefix(char *inp, char *str){
     TODO: Enhancement: API that converts a string to a vector of strings similar to list.split in python
 */
 static short parseAddress(char *buf, char **AddressStr){
-    char *address = strstr(buf, " ") + 1;
+    char *address = strchr(buf, ' ') + 1;
     size_t len = strlen(address);
     if (address[len - 1] == '\n'){
         address[len - 1] = '\0';
@@ -67,6 +86,12 @@ static intptr_t convertStrToAddr(char *buf){
 
 void userInput(){
     char buf[MAX_LENGTH];
+    /*
+        TODO: Various argument checks
+            Eg.1: Comands such as continue, exit should not have arguments
+            Eg.2: Commands like break, read should have the right arguments (argc and argv)
+        TODO: Add flag to TraceeInfo to check if tracee is yet to terminate
+    */
     while(getPrompt(buf) != NULL){
         if (checkPrefix(buf, "continue")){
             continueTracee();
@@ -84,8 +109,37 @@ void userInput(){
             intptr_t address = convertStrToAddr(buf);
             deleteBreakpointTracee(address);
         }
-        else if (checkPrefix(buf, "listb")){
+        else if (checkPrefix(buf, "list")){
             listBreakpointTracee();
+        }
+        else if (checkPrefix(buf, "read")){
+            /* Assumption: Input is of the form read [reg|mem] [reg_name|mem_addr] */
+            char *argv = strchr(buf, ' ');
+            if (argv == NULL){
+                printf("\033[1;31m'read' missing arguments\nIgnoring command...\033[0m\n");
+                continue;
+            }
+            argv += 1;
+            char *arg2 = strchr(argv, ' ');
+            if (arg2 == NULL){
+                printf("\033[1;31mMissing register/address\nIgnoring command...\033[0m\n");
+                continue;
+            }
+            if (checkPrefix(argv, "register")){
+                arg2 += 1;
+                getRegValue(arg2);
+            }
+            else if (checkPrefix(argv, "memory")){
+                arg2 += 1;
+                intptr_t address;
+                if (arg2[1] == 'X' || arg2[1] == 'x'){
+                    address = strtoull(arg2 + 2, NULL, 16);
+                }
+                else{
+                    address = strtoull(arg2, NULL, 16);
+                }
+                getMemValue(address);
+            }
         }
     }
 }
