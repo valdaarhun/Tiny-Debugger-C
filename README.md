@@ -9,3 +9,6 @@ git clone https://github.com/valdaarhun/Tiny-Debugger.git
 cd Tiny-Debugger
 make
 ```
+# Update
+
+Abandoned in favor of the [tiny debugger in rust](https://github.com/valdaarhun/Tiny-Debugger).
